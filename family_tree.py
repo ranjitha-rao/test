@@ -13,14 +13,15 @@ class Node:
     def __str__(self):
         return str(self.info)
 
-    def display_tree(self, level=0):
+    def display_tree(self, level=0, test_list=[]):
         '''Displaying the hierarchical result '''
         tabs_level = "\t" * level
         print(f'{tabs_level}{self.info}\n')
+        test_list.append({self.info:level})
         for child in self.children:
             # Recursively display all children
-            child.display_tree(level + 1)
-
+            child.display_tree(level + 1,test_list)
+        return test_list
     @staticmethod
     def create_node(family_member : str):
         '''Helper method to create a node'''
@@ -34,11 +35,13 @@ class Node:
     @staticmethod
     def create_family_tree(input_string:str):
         '''Creaet family tree'''
-        family = input_string.split(sep='|')
+        family = input_string.split(sep='|')if "|" in input_string else []
         parent_queue = queue.Queue()
         cur_parent = None
         root = None
         for family_member in family:
+            if len(family_member) == 0:
+                continue
             # create the node
             node = Node.create_node(family_member)
             # Put it in a queue.
@@ -58,9 +61,8 @@ class Node:
         return root
 
 if __name__ == '__main__':
-   # root = Node.create_family_tree(input_string = "None,0,grandpa|0,1,son|0,2,daugther|1,3,grandkid|1,4,grandkid|2,5,grandkid|5,6,greatgrandkid")
-    root = Node.create_family_tree(input_string="None,0,Smith|0,1,Conor|0,2,Cooper|1,3,Alexis|1,4,Sue|2,5,Max|2,6,Elvis|2,7,Steven|3,8,Joe|5,9,Luis|8,10,Clark")
-    print(root.display_tree())
-
-
-
+   # root = Node.create_family_tree(input_string = "None,0,grandpa|0,1,son|0,2,daugther|1,3,grandkid|1,4,grandkid|2,
+   # 5,grandkid|5,6,greatgrandkid")
+    root = Node.create_family_tree(input_string="None,0,Smith|0,1,Conor|0,2,Cooper|1,3,Alexis|1,4,Sue|2,5,Max|2,6,"
+                                                "Elvis|2,7,Steven|3,8,Joe|5,9,Luis|8,10,Clark")
+    root.display_tree()
